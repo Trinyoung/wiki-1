@@ -380,6 +380,16 @@ const parseMeta = (content) => {
  * @return     {String}  Text-only version
  */
 const removeMarkdown = (content) => {
+  // return _.join(mdRemove(_.chain(content)
+  //   .replace(/<!-- ?([a-zA-Z]+):(.*)-->/g, '')
+  //   .replace(/```([^`]|`)+?```/g, '')
+  //   .replace(/`[^`]+`/g, '')
+  //   .replace(new RegExp('(?!mailto:)(?:(?:http|https|ftp)://)(?:\\S+(?::\\S*)?@)?(?:(?:(?:[1-9]\\d?|1\\d\\d|2[01]\\d|22[0-3])(?:\\.(?:1?\\d{1,2}|2[0-4]\\d|25[0-5])){2}(?:\\.(?:[0-9]\\d?|1\\d\\d|2[0-4]\\d|25[0-4]))|(?:(?:[a-z\\u00a1-\\uffff0-9]+-?)*[a-z\\u00a1-\\uffff0-9]+)(?:\\.(?:[a-z\\u00a1-\\uffff0-9]+-?)*[a-z\\u00a1-\\uffff0-9]+)*(?:\\.(?:[a-z\\u00a1-\\uffff]{2,})))|localhost)(?::\\d{2,5})?(?:(/|\\?|#)[^\\s]*)?', 'g'), '')
+  //   .deburr()
+  //   .toLower()
+  //   .value()
+  // ).replace(/\r?\n|\r/g, ' ').match(textRegex), ' ')
+  // HTZ change remove
   return _.join(mdRemove(_.chain(content)
     .replace(/<!-- ?([a-zA-Z]+):(.*)-->/g, '')
     .replace(/```([^`]|`)+?```/g, '')
@@ -388,7 +398,7 @@ const removeMarkdown = (content) => {
     .deburr()
     .toLower()
     .value()
-  ).replace(/\r?\n|\r/g, ' ').match(textRegex), ' ')
+  ).replace(/\r?\n|\r/g, ' '), '')
 }
 
 module.exports = {

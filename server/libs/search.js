@@ -9,6 +9,10 @@ const stopWord = require('stopword')
 const streamToPromise = require('stream-to-promise')
 const searchAllowedChars = new RegExp('[^a-z0-9' + appdata.regex.cjk + appdata.regex.arabic + ' ]', 'g')
 
+//HTZ
+//import chinese cut module
+const nodejieba = require('nodejieba')
+
 module.exports = {
 
   _si: null,
@@ -93,7 +97,9 @@ module.exports = {
           title: content.title,
           subtitle: content.subtitle || '',
           parent: content.parent || '',
-          content: content.text || ''
+          //HTZ add chinese cut
+          //content: content.text || ''
+          content: nodejieba.cut(content.text).join(' ') || ''
         }]).then(() => {
           winston.log('verbose', 'Entry ' + content._id + ' added/updated to search index.')
           return true

@@ -35,7 +35,7 @@ export default {
     searchq: function (val, oldVal) {
       let self = this
       self.searchmoveidx = 0
-      if (val.length >= 3) {
+      if (val.length >= 2) {
         self.searchactive = true
         self.searchload++
         socket.emit('search', { terms: val }, (data) => {
