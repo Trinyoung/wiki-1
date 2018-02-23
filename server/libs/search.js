@@ -61,7 +61,7 @@ module.exports = {
     if (!content.isEntry) {
       return Promise.resolve(true)
     }
-
+   
     return self._isReady.then(() => {
       return self.delete(content._id).then(() => {
         return self._si.concurrentAddAsync({
@@ -99,7 +99,7 @@ module.exports = {
           parent: content.parent || '',
           //HTZ add chinese cut
           //content: content.text || ''
-          content: nodejieba.cut(content.text).join(' ') || ''
+          content: nodejieba.cutHMM(content.text).join(' ') || ''
         }]).then(() => {
           winston.log('verbose', 'Entry ' + content._id + ' added/updated to search index.')
           return true
@@ -169,11 +169,19 @@ module.exports = {
       .trim()
       .replace(searchAllowedChars, ' ')
       .value()
-    let arrTerms = _.chain(terms)
-      .split(' ')
-      .filter((f) => { return !_.isEmpty(f) })
-      .value()
+    // let arrTerms = _.chain(terms)
+    //   .split(' ')
+    //   .filter((f) => { return !_.isEmpty(f) })
+    //   .value()
 
+    // Trinyoung change
+    let arrTerms = nodejieba.cutHMM(terms);
+    const stopWords = _.get(stopWord, appconfig.lang, []);
+    arrTerms = _.filter(arrTerms,(item)=>{
+      if(stopWords.indexOf(item)===-1&&item !==" "){
+          return item
+      }
+    });
     return streamToPromise(self._si.search({
       query: [{
         AND: { '*': arrTerms }
