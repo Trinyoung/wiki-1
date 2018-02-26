@@ -61,7 +61,13 @@ module.exports = {
     if (!content.isEntry) {
       return Promise.resolve(true)
     }
-   
+    const stopWords = _.get(stopWord, appconfig.lang, [])
+    const newText = content.text.replace(/[\~|\!|\！|\.|\。|\?|\？|\,|\，|\、]/g, ' ')
+    const newContent = _.filter(nodejieba.cutHMM(newText), (item) => {
+      if (stopWords.indexOf(item) === -1 && item !== " ") {
+        return item
+      }
+    }).join(' ');
     return self._isReady.then(() => {
       return self.delete(content._id).then(() => {
         return self._si.concurrentAddAsync({
@@ -99,7 +105,7 @@ module.exports = {
           parent: content.parent || '',
           //HTZ add chinese cut
           //content: content.text || ''
-          content: nodejieba.cutHMM(content.text).join(' ') || ''
+          content: _.trim(newContent) || ''
         }]).then(() => {
           winston.log('verbose', 'Entry ' + content._id + ' added/updated to search index.')
           return true
@@ -181,7 +187,7 @@ module.exports = {
       if(stopWords.indexOf(item)===-1&&item !==" "){
           return item
       }
-    });
+    });    
     return streamToPromise(self._si.search({
       query: [{
         AND: { '*': arrTerms }
